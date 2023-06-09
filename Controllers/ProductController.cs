@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.Authorization;
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
-    public class PersonController : ControllerBase
+    public class ProductController : ControllerBase
     {
         private readonly IDataAccessProvider _dataAccessProvider;
         private readonly IPersonService _personService;
-        public PersonController(IDataAccessProvider dataAccessProvider, IPersonService personService)
+        public ProductController(IDataAccessProvider dataAccessProvider, IPersonService personService)
         {
             _dataAccessProvider = dataAccessProvider;
             _personService = personService;
