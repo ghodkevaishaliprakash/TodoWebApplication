@@ -16,19 +16,19 @@ namespace WebApplication1.DataAccess
             _context = context;
         }
 
-        public async Task<int> AddPersonsRecordAsync(Persons person)
+        public async Task<int> AddProductRecordAsync(Product req)
         {
-            await _context.Persons.AddAsync(person);
+            await _context.Product.AddAsync(req);
             await _context.SaveChangesAsync();
-            int id =person.Id;
+            int id = req.Id;
 
             return id;
         }
 
-        public async Task<bool> UpdatePersonsRecordAsync(int id, Product req)
+        public async Task<bool> UpdateProductRecordAsync(int id, Product req)
         {
-            // var entity =await _context.Persons.FirstOrDefaultAsync(t => t.Id == id);
-            var Productdata = _context.Persons.FirstOrDefault(t => t.Id == id);
+            
+            var Productdata = _context.Product.FirstOrDefault(t => t.Id == id);
             if (Productdata == null)
             {
                 throw new NotFound("No record found for id = " + id);
@@ -42,36 +42,37 @@ namespace WebApplication1.DataAccess
                 Productdata.Price = req.Price;
             }
 
-            //_context.Persons.Update(personData);
+            
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task DeletePersonsRecordAsync(int id)
+        public async Task DeleteProductRecordAsync(int id)
         {
-            var entity = _context.Persons.FirstOrDefault(t => t.Id == id);
+            var entity = _context.Product.FirstOrDefault(t => t.Id == id);
             if(entity == null)
             {
                 throw new NotFound("No record found by id " + id);
             }
-            _context.Persons.Remove(entity);
+            _context.Product.Remove(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Persons>> GetPersonRecordsAsync()
+        public async Task<List<Product>> GetProductRecordsAsync()
         {
-            var response = await _context.Persons.ToListAsync();
+            var response = await _context.Product.ToListAsync();
             return response;
         }
 
-        public async Task<Persons> GetPersonRecordByIdAsync(int id)
+        public async Task<Product> GetProductRecordByIdAsync(int id)
         {
-            return await _context.Persons.FirstOrDefaultAsync(t => t.Id == id);
+            return await _context.Product.FirstOrDefaultAsync(t => t.Id == id);
+       
         }
 
-        public async Task<List<Persons>> FilterResult(string filter,int PageNo,int PageSize)
+        public async Task<List<Product>> FilterResult(string filter,int PageNo,int PageSize)
         {
-            var query = _context.Persons.AsQueryable();
+            var query = _context.Product.AsQueryable();
             //var Page_No = PageNo;
             //var PageSize_No = PageSize;
             try
@@ -79,22 +80,16 @@ namespace WebApplication1.DataAccess
 
                 if (!string.IsNullOrEmpty(filter.Trim().ToLowerInvariant()))
                 {
-                    query = _context.Persons.Where(p => p.Name.ToLower().Contains(filter.ToLower().Trim()));
+                    query = _context.Product.Where(p => p.Name.ToLower().Contains(filter.ToLower().Trim()));
                     
                 }
             }
-            catch (Exception ex) { throw new Exception(ex.Message); }
+            catch (Exception ex)
+            { throw new Exception(ex.Message);
+            }
 
             return query.Skip((PageNo - 1) * PageSize).Take(PageSize).ToList();
-
-            // return query.ToList();
-            //return new <Persons>(query, Page_No, PageSize_No);
-            //var responce = await _context.Persons.Take(PageSize_No).ToListAsync();
-
-            // return new PagedList<Movie>(
-            //query, FilteringParams.PageNumber, PageNo.PageSize);
-            //  return query.ToList();
-            // return query.Take(3).ToList();  
+ 
         }
     }
 }

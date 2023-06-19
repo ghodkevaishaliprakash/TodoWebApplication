@@ -5,56 +5,51 @@ using System;
 using System.Collections.Generic;
 using WebApplication1.Services;
 using Microsoft.AspNetCore.Authorization;
+using ProductInfo.Services;
 
 namespace WebApplication1.Controllers
 {
     [Route("api/[controller]")]
     public class ProductController : ControllerBase
     {
-        private readonly IDataAccessProvider _dataAccessProvider;
-        private readonly IPersonService _personService;
-        public ProductController(IDataAccessProvider dataAccessProvider, IPersonService personService)
-        {
-            _dataAccessProvider = dataAccessProvider;
-            _personService = personService;
-        }
+       
+        private readonly IProductService _productService;
 
-        [HttpGet, Authorize]
-        public async Task<IEnumerable<Persons>> Get()
+        public ProductController(IProductService productService)
         {
-            return await _personService.GetAllPersonDetails();
+            _productService = productService;   
+        }
+       
+        [HttpGet, Authorize]
+        public async Task<IEnumerable<Product>> Get()
+        {
+            return await _productService.GetAllProductDetails();
         }
 
         [HttpPost, Authorize]
-        public async Task<Persons> Create([FromBody] ProductReq req)
+        public async Task<Product> Create([FromBody] ProductReq req)
         {
-            var result = await _personService.CreatePerson(req);
+            var result = await _productService.CreateProduct(req);
             return result;
         }
 
         [HttpGet("{id}"), Authorize]
-        public async Task<Persons> GetId(int id)
+        public async Task<Product> GetId(int id)
         {
-            return await _personService.GetPersonById(id);
+            return await _productService.GetProductById(id);
         }
 
-        //[HttpPut, Authorize]
-        //public async Task<IActionResult> Update1([FromBody] Persons req)
-        //{
-        //    await _personService.UpdateRecord1(req);
-        //    return Ok();    
-        //}
         [HttpPut, Authorize]
-        public async Task<Persons> Update(int id, [FromBody] Product req)
+        public async Task<Product> Update(int id, [FromBody] Product req)
         {
-            var result = await _personService.UpdateRecord(id, req);
+            var result = await _productService.UpdateRecord(id, req);
             return result;
         }
 
         [HttpDelete("{id}"), Authorize]
         public async Task<string> DeleteConfirmed(int id)
         {
-            var result = await _personService.DeletePersonById(id);
+            var result = await _productService.DeleteProductById(id);
             
             return "Successfully deleted record by id: " +id;
         }
@@ -62,9 +57,9 @@ namespace WebApplication1.Controllers
 
         [HttpGet, Authorize]
         [Route("filterby")]
-        public async Task<List<Persons>> Get([FromQuery] string filterby,int PageNo,int PageSize)
+        public async Task<List<Product>> Get([FromQuery] string filterby,int PageNo,int PageSize)
         {
-            return await _personService.FilterResult(filterby,PageNo,PageSize);
+            return await _productService.FilterResult(filterby,PageNo,PageSize);
         }
 
     }

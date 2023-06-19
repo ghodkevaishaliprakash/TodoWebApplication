@@ -6,13 +6,13 @@ namespace WebApplication1.DataAccess
     public interface IDataAccessProvider
     {
 
-        Task<int> AddPersonsRecordAsync(Persons req);
-        Task<bool> UpdatePersonsRecordAsync(int id, Product req);
-        Task DeletePersonsRecordAsync(int id);
-        Task<Persons> GetPersonRecordByIdAsync(int id);
-        Task<List<Persons>> GetPersonRecordsAsync();
+        Task<int> AddProductRecordAsync(Product req);
+        Task<bool> UpdateProductRecordAsync(int id, Product req);
+        Task DeleteProductRecordAsync(int id);
+        Task<Product> GetProductRecordByIdAsync(int id);
+        Task<List<Product>> GetProductRecordsAsync();
 
-        Task<List<Persons>> FilterResult(string filter,int PageNo,int PageSize);
+        Task<List<Product>> FilterResult(string filter,int PageNo,int PageSize);
 
 
     }

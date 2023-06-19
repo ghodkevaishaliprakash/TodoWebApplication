@@ -1,66 +1,66 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using WebApplication1.DataAccess;
+﻿using WebApplication1.DataAccess;
 using WebApplication1.Errors;
 using WebApplication1.Models;
-using System.Linq;
 
-namespace WebApplication1.Services
+namespace ProductInfo.Services
 {
-    public class PersonService : IPersonService
+    public class ProductService : IProductService
     {
         private readonly IDataAccessProvider _dataAccessProvider;
-
-        public PersonService(IDataAccessProvider dataAccessProvider)
+        public ProductService(IDataAccessProvider dataAccessProvider)
         {
             _dataAccessProvider = dataAccessProvider;
         }
-
-        public async Task<Persons> CreatePerson(ProductReq req)
+        public async Task<IEnumerable<Product>> GetAllProductDetails()
+        {
+            return await _dataAccessProvider.GetProductRecordsAsync();
+        }
+        public async Task<Product> CreateProduct(ProductReq req)
         {
             var validator = await Validator(req);
-            
+
             if (!string.IsNullOrEmpty(validator))
             {
                 throw new BadRequest(validator);
             }
-            var request = new Persons {Name=req.Name, Price= req.Price };
-            var result  = await _dataAccessProvider.AddPersonsRecordAsync(request);
-            if(result > 0)
+            var request = new Product { Name = req.Name, Price = req.Price };
+            var result = await _dataAccessProvider.AddProductRecordAsync(request);
+            if (result > 0)
             {
                 return request;
             }
-            throw new Exception("Error while saving data."); ;
+            throw new Exception("Error while saving data."); 
 
         }
 
-        public async Task<bool> DeletePersonById(int id)
+        public async Task<bool> DeleteProductById(int id)
         {
             try
             {
-                await _dataAccessProvider.DeletePersonsRecordAsync(id);
+                await _dataAccessProvider.DeleteProductRecordAsync(id);
                 return true;
             }
-            catch(Exception ex) { }
+            catch (Exception ex) { }
             throw new Exception("Error occured while deleting data");
         }
 
-        public async Task<List<Persons>> FilterResult(string filter, int PageNo, int PageSize)
-        {            
-            return await _dataAccessProvider.FilterResult(filter,PageNo,PageSize);
-        }
-
-        public async Task<IEnumerable<Persons>> GetAllPersonDetails()
+        public async Task<List<Product>> FilterResult(string filter, int PageNo, int PageSize)
         {
-            return await _dataAccessProvider.GetPersonRecordsAsync();
+            return await _dataAccessProvider.FilterResult(filter, PageNo, PageSize);
         }
 
-        public async Task<Persons> GetPersonById(int id)
+        public async Task<IEnumerable<Product>> GetAllPersonDetails()
+        {
+            return await _dataAccessProvider.GetProductRecordsAsync();
+        }
+
+        public async Task<Product> GetProductById(int id)
         {
             if (id <= 0)
             {
                 throw new BadRequest("Invalid Id.");
             }
-            var response = await _dataAccessProvider.GetPersonRecordByIdAsync(id);
+            var response = await _dataAccessProvider.GetProductRecordByIdAsync(id);
             if (response == null)
             {
                 throw new NotFound("No record found with id = " + id);
@@ -68,15 +68,15 @@ namespace WebApplication1.Services
             return response;
         }
 
-        public async Task<Persons> UpdateRecord(int id, Product req)
+        public async Task<Product> UpdateRecord(int id, Product req)
         {
-            var response = new Persons();
+            var response = new Product();
             if (id <= 0)
             {
                 throw new BadRequest("Invalid Id.");
             }
-            
-            var result = await _dataAccessProvider.UpdatePersonsRecordAsync(id,req);
+
+            var result = await _dataAccessProvider.UpdateProductRecordAsync(id, req);
             if (result)
             {
                 response.Id = id;
@@ -90,7 +90,7 @@ namespace WebApplication1.Services
         #region "Validation"
         private async Task<string> Validator(ProductReq req)
         {
-            
+
             if (string.IsNullOrEmpty(req.Name))
             {
                 return "Invalid Name";
@@ -105,5 +105,6 @@ namespace WebApplication1.Services
 
 
         #endregion
+
     }
 }

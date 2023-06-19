@@ -10,11 +10,11 @@ namespace WebApplication1.DataAccess
         {
         }
 
-        public DbSet<Persons> Persons { get; set; }
+        public DbSet<Product> Product { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Persons>(entity => { 
+            builder.Entity<Product>(entity => { 
                 entity.ToTable("Product");
                 entity.Property(e => e.Id).HasColumnName("id");
                 entity.Property(e => e.Name).HasColumnName("name");

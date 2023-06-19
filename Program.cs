@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ProductInfo.Services;
 using System.Text;
 using WebApplication1.DataAccess;
 using WebApplication1.Middleware;
@@ -29,11 +30,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddControllers();
+//added connectionstring for postgreSQL
 var sqlConnectionString = builder.Configuration["PostgreConnectionString:DefaultConnection"];
 builder.Services.AddDbContext<PostgreSqlContext>(options => options.UseNpgsql(sqlConnectionString));
+//Configure service with there interface
 builder.Services.AddScoped<IDataAccessProvider, DataAccessProvider>();
 builder.Services.AddScoped<IJwtToken, JwtToken>();
-builder.Services.AddScoped<IPersonService, PersonService>();
+//builder.Services.AddScoped<IPersonService, PersonService>();
+builder.Services.AddScoped<IProductService,ProductService>();
 builder.Services.AddTransient<ErrorHandlingMiddleware>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddCors();
